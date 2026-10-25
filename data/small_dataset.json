@@ -1,0 +1,88 @@
+{
+  "time_structure": {
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "periods_per_day": 6,
+    "break_periods": [3]
+  },
+  "subjects": [
+    { "code": "CS101", "name": "Data Structures", "weekly_hours": 3, "type": "theory" },
+    { "code": "CS102", "name": "Algorithms", "weekly_hours": 3, "type": "theory" },
+    { "code": "MA101", "name": "Discrete Mathematics", "weekly_hours": 3, "type": "theory" },
+    { "code": "CS103", "name": "Database Systems", "weekly_hours": 3, "type": "theory" },
+    { "code": "CS104", "name": "Operating Systems", "weekly_hours": 3, "type": "theory" },
+    { "code": "CS105", "name": "Computer Networks", "weekly_hours": 3, "type": "theory" },
+    { "code": "CS106", "name": "Software Engineering", "weekly_hours": 2, "type": "theory" },
+    { "code": "CSL101", "name": "Database Lab", "weekly_hours": 2, "type": "lab" },
+    { "code": "CSL102", "name": "Operating Systems Lab", "weekly_hours": 2, "type": "lab" }
+  ],
+  "teachers": [
+    {
+      "name": "Dr. Sharma",
+      "subjects": ["CS101", "CS102"],
+      "unavailable_slots": [[0, 0]],
+      "max_weekly_load": 16,
+      "preferred_avoid_periods": [0]
+    },
+    {
+      "name": "Prof. Verma",
+      "subjects": ["MA101"],
+      "unavailable_slots": [[1, 4]],
+      "max_weekly_load": 16,
+      "preferred_avoid_periods": []
+    },
+    {
+      "name": "Dr. Gupta",
+      "subjects": ["CS103", "CSL101"],
+      "unavailable_slots": [[4, 5]],
+      "max_weekly_load": 16,
+      "preferred_avoid_periods": [5]
+    },
+    {
+      "name": "Prof. Singh",
+      "subjects": ["CS104", "CSL102"],
+      "unavailable_slots": [],
+      "max_weekly_load": 16,
+      "preferred_avoid_periods": [0]
+    },
+    {
+      "name": "Dr. Patel",
+      "subjects": ["CS105"],
+      "unavailable_slots": [[2, 1]],
+      "max_weekly_load": 16,
+      "preferred_avoid_periods": []
+    },
+    {
+      "name": "Prof. Reddy",
+      "subjects": ["CS106"],
+      "unavailable_slots": [],
+      "max_weekly_load": 16,
+      "preferred_avoid_periods": []
+    }
+  ],
+  "classes": [
+    {
+      "name": "CS-A",
+      "strength": 36,
+      "subjects": ["CS101", "MA101", "CS103", "CS104", "CSL101", "CSL102"],
+      "lunch_break_period": 3
+    },
+    {
+      "name": "CS-B",
+      "strength": 34,
+      "subjects": ["CS102", "MA101", "CS103", "CS105", "CSL101", "CSL102"],
+      "lunch_break_period": 3
+    },
+    {
+      "name": "IT-A",
+      "strength": 32,
+      "subjects": ["CS101", "MA101", "CS105", "CS106", "CSL101", "CSL102"],
+      "lunch_break_period": 3
+    }
+  ],
+  "rooms": [
+    { "name": "Room-101", "capacity": 40, "type": "classroom" },
+    { "name": "Room-102", "capacity": 40, "type": "classroom" },
+    { "name": "Lab-201", "capacity": 40, "type": "lab" },
+    { "name": "Lab-202", "capacity": 40, "type": "lab" }
+  ]
+}

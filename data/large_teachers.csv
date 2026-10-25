@@ -1,0 +1,17 @@
+name,subjects,unavailable_slots,max_weekly_load,preferred_avoid_periods
+Dr. A. Sharma,CS201;CS202,"0,0;4,6",18,0
+Prof. B. Verma,CS203;CSL202,"1,4",18,
+Dr. C. Gupta,CS204;CSL203,"2,0;3,6",18,0
+Prof. D. Singh,CS205;CSL204,,18,
+Dr. E. Patel,CS206;CS201,"3,1",18,
+Prof. F. Reddy,MA201,"0,6",18,6
+Dr. G. Rao,EC201;EC202,"1,1",18,
+Prof. H. Iyer,CS207;CS208,,18,0
+Dr. I. Joshi,CS209;CSL204,"4,0",18,
+Prof. J. Kapoor,CSL201;CS202,,18,
+Dr. K. Nair,EC202;EC201,"2,5",18,
+Prof. L. Kumar,CS208;CS206,,18,
+Dr. M. Roy,CS203;CSL202,"0,2",18,
+Prof. N. Saxena,CS205;CS207,,18,
+Dr. O. Das,CS204;CSL203,"3,5",18,
+Prof. P. Bose,MA201;CS209,,18,

@@ -1,0 +1,10 @@
+code,name,weekly_hours,type
+CS101,Data Structures,3,theory
+CS102,Algorithms,3,theory
+MA101,Discrete Mathematics,3,theory
+CS103,Database Systems,3,theory
+CS104,Operating Systems,3,theory
+CS105,Computer Networks,3,theory
+CS106,Software Engineering,2,theory
+CSL101,Database Lab,2,lab
+CSL102,Operating Systems Lab,2,lab

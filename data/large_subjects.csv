@@ -1,0 +1,17 @@
+code,name,weekly_hours,type
+CS201,Artificial Intelligence,3,theory
+CS202,Machine Learning,3,theory
+CS203,Database Systems,3,theory
+CS204,Operating Systems,3,theory
+CS205,Computer Networks,3,theory
+CS206,Data Structures & Algos,3,theory
+MA201,Applied Mathematics,3,theory
+EC201,Digital Logic Design,3,theory
+EC202,Microprocessors & MCU,3,theory
+CS207,Software Engineering,2,theory
+CS208,Compiler Design,3,theory
+CS209,Cyber Security,2,theory
+CSL201,AI & ML Lab,2,lab
+CSL202,Database Systems Lab,2,lab
+CSL203,Operating Systems Lab,2,lab
+CSL204,Networks & Security Lab,2,lab

@@ -1,0 +1,7 @@
+name,subjects,unavailable_slots,max_weekly_load,preferred_avoid_periods
+Dr. Sharma,CS101;CS102,"0,0",16,0
+Prof. Verma,MA101,"1,4",16,
+Dr. Gupta,CS103;CSL101,"4,5",16,5
+Prof. Singh,CS104;CSL102,,16,0
+Dr. Patel,CS105,"2,1",16,
+Prof. Reddy,CS106,,16,
