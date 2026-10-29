@@ -2,20 +2,6 @@
 app.py
 ------
 Interactive Streamlit Web Application for the AI-Based Timetable Scheduler.
-
-Features:
-  1. Data Input: Preloaded Small/Large datasets or Upload Custom JSON/CSV files with live validation.
-  2. Algorithm Selector:
-     - Plain Backtracking (Baseline)
-     - Heuristic Backtracking (MRV + Degree + Forward Checking)
-     - Min-Conflicts Local Search (with random walk/restart)
-     - Simulated Annealing (+6 Bonus)
-     - Hybrid CSP + SA (+6 Bonus)
-  3. Real-time Metrics: Time taken, nodes/iterations, hard violations, soft penalties, cost score.
-  4. 2D Timetable Views: By Class, By Teacher, By Room.
-  5. Interactive Manual Editor with Instant Conflict Detection (Flags any H1-H9 violation immediately).
-  6. Direct Export to CSV and multi-sheet Excel (.xlsx).
-  7. Experimental Benchmark & Convergence Analysis visualization.
 """
 
 import streamlit as st
@@ -44,45 +30,47 @@ from core.utils import (
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="AI Timetable Scheduler",
-    page_icon="📅",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for polished, beginner-friendly UI
+# Custom CSS: Bright white header and high-contrast status cards
 st.markdown("""
 <style>
     .main-title {
         font-size: 2.2rem;
         font-weight: 700;
-        color: #1e3a8a;
+        color: #FFFFFF !important;
         margin-bottom: 0.2rem;
     }
     .sub-title {
         font-size: 1.05rem;
-        color: #475569;
+        color: #94a3b8;
         margin-bottom: 1.5rem;
     }
     .metric-card {
-        background-color: #f8fafc;
+        background-color: #1e293b;
         border-radius: 8px;
         padding: 15px;
-        border-left: 5px solid #2563eb;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border-left: 5px solid #3b82f6;
     }
     .clash-card {
-        background-color: #fef2f2;
-        border-left: 5px solid #ef4444;
-        padding: 12px;
+        background-color: #fee2e2;
+        border-left: 5px solid #dc2626;
+        padding: 14px 18px;
         border-radius: 6px;
-        margin-bottom: 8px;
+        margin-bottom: 14px;
+        color: #991b1b !important;
+        font-size: 1.05rem;
     }
     .success-card {
-        background-color: #f0fdf4;
-        border-left: 5px solid #22c55e;
-        padding: 12px;
+        background-color: #d1fae5;
+        border-left: 5px solid #059669;
+        padding: 14px 18px;
         border-radius: 6px;
-        margin-bottom: 8px;
+        margin-bottom: 14px;
+        color: #065f46 !important;
+        font-size: 1.05rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -109,7 +97,6 @@ if "last_stats" not in st.session_state:
 # SIDEBAR: DATA INPUT & CONFIGURATION
 # -----------------------------------------------------------------------------
 with st.sidebar:
-    st.image("https://img.icons8.com/color/96/calendar--v1.png", width=64)
     st.title("Scheduler Setup")
 
     st.subheader("1. Select Dataset")
@@ -149,13 +136,11 @@ with st.sidebar:
 
         if f_subjs and f_teach and f_class and f_rooms:
             try:
-                # Load CSVs to DataFrames
                 df_subjs = pd.read_csv(f_subjs)
                 df_teach = pd.read_csv(f_teach)
                 df_class = pd.read_csv(f_class)
                 df_rooms = pd.read_csv(f_rooms)
 
-                # Reconstruct dict format
                 subj_list = df_subjs.to_dict(orient="records")
                 teach_list = []
                 for _, r in df_teach.iterrows():
@@ -211,12 +196,11 @@ with st.sidebar:
 
         errors = loaded_data.validate()
         if not errors:
-            st.success("✅ Dataset Solvable & Validated")
+            st.success("Dataset Solvable & Validated")
         else:
             for err in errors:
-                st.warning(f"⚠️ {err}")
+                st.warning(f"Validation Warning: {err}")
 
-        # Quick summary stats in sidebar
         st.markdown(f"""
         **Dataset Summary:**
         - **Classes:** {len(loaded_data.classes)}
@@ -241,13 +225,13 @@ with st.sidebar:
 
     time_limit = st.slider("Time limit (seconds):", 1.0, 30.0, 10.0, 0.5)
 
-    generate_btn = st.button("🚀 Generate Timetable", type="primary", use_container_width=True)
+    generate_btn = st.button("Generate Timetable", type="primary", use_container_width=True)
 
 
 # -----------------------------------------------------------------------------
 # MAIN APP HEADER
 # -----------------------------------------------------------------------------
-st.markdown('<div class="main-title">📅 AI-Based College Timetable Scheduler</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">AI-Based College Timetable Scheduler</div>', unsafe_allow_html=True)
 st.markdown(
     f'<div class="sub-title">Active Dataset: <b>{st.session_state.current_dataset_name}</b> | '
     'Constraint Satisfaction Problem & Local Search Solver</div>',
@@ -289,7 +273,7 @@ if generate_btn and st.session_state.problem_data:
         st.session_state.assignment = assignment
         st.session_state.last_stats = stats
 
-# If no assignment yet generated, auto-run heuristic backtracking once on small dataset
+# Auto-run heuristic backtracking once on startup if not generated
 if st.session_state.assignment is None and st.session_state.problem_data:
     bt = BacktrackingSolver(st.session_state.csp)
     assign, stats = bt.solve_heuristic(time_limit=10.0)
@@ -303,41 +287,46 @@ if st.session_state.assignment is None and st.session_state.problem_data:
 if st.session_state.assignment is not None and st.session_state.last_stats is not None:
     eval_res = st.session_state.checker.evaluate(st.session_state.assignment)
     stats = st.session_state.last_stats
+    algo_name = stats.get("algorithm", algorithm_choice)
 
-    # Status Notification
+    # Status Notification with visible dark text
     if eval_res["hard_violations"] == 0:
         st.markdown(
-            f'<div class="success-card"><b>✅ VALID TIMETABLE FOUND!</b> '
-            f'Generated via <i>{stats.get("algorithm", "AI Search")}</i> with <b>0 Hard Constraint Clashes</b>.</div>',
+            f'<div class="success-card">'
+            f'<strong>VALID TIMETABLE FOUND</strong> &mdash; '
+            f'Generated via <strong>{algo_name}</strong> with <strong>0 Hard Constraint Clashes</strong>.'
+            f'</div>',
             unsafe_allow_html=True
         )
     else:
         st.markdown(
-            f'<div class="clash-card"><b>⚠️ HARD CONSTRAINTS VIOLATED:</b> '
-            f'{eval_res["hard_violations"]} conflicts detected. Review details in the Constraints tab.</div>',
+            f'<div class="clash-card">'
+            f'<strong>HARD CONSTRAINTS VIOLATED:</strong> '
+            f'{eval_res["hard_violations"]} conflicts detected with {algo_name}. Review details in Constraint Breakdown.'
+            f'</div>',
             unsafe_allow_html=True
         )
 
-    # Metric Columns
+    # Metric Columns (Clean text without emojis)
     c1, c2, c3, c4, c5 = st.columns(5)
-    c1.metric("⏱️ Time Taken", f"{stats.get('time_taken', 0):.3f} s")
-    c2.metric("❌ Hard Violations", f"{eval_res['hard_violations']}")
-    c3.metric("🎯 Soft Penalty", f"{eval_res['soft_penalty']} pts")
+    c1.metric("Time Taken", f"{stats.get('time_taken', 0):.3f} s")
+    c2.metric("Hard Violations", f"{eval_res['hard_violations']}")
+    c3.metric("Soft Penalty", f"{eval_res['soft_penalty']} pts")
     
     nodes_val = stats.get("nodes_expanded", stats.get("iterations", "N/A"))
-    c4.metric("🔄 Nodes / Iterations", f"{nodes_val}")
-    c5.metric("💲 Total Cost", f"{eval_res['total_cost']}")
+    c4.metric("Nodes / Iterations", f"{nodes_val}")
+    c5.metric("Total Cost", f"{eval_res['total_cost']}")
 
 
 # -----------------------------------------------------------------------------
 # MAIN DASHBOARD TABS
 # -----------------------------------------------------------------------------
 tab_grids, tab_editor, tab_analysis, tab_benchmarks, tab_export = st.tabs([
-    "📊 Timetable Views",
-    "✏️ Manual Schedule Editor",
-    "⚖️ Constraint Breakdown",
-    "📈 Experiments & Benchmarks",
-    "💾 Export (CSV / Excel)"
+    "Timetable Views",
+    "Manual Schedule Editor",
+    "Constraint Breakdown",
+    "Experiments & Benchmarks",
+    "Export (CSV / Excel)"
 ])
 
 # -----------------------------------------------------------------------------
@@ -373,14 +362,13 @@ with tab_grids:
 # -----------------------------------------------------------------------------
 with tab_editor:
     st.subheader("Manual Schedule Editor & Instant Clash Checker")
-    st.caption("Move any scheduled session to another time slot or room. The system immediately checks all Hard Constraints (H1-H9) and warns you of any conflict!")
+    st.caption("Move any scheduled session to another time slot or room. The system immediately checks all Hard Constraints (H1-H9) and flags any conflict.")
 
     if st.session_state.assignment is not None:
         sessions = st.session_state.csp.sessions
         data = st.session_state.problem_data
         assignment = st.session_state.assignment
 
-        # Create session dropdown labels
         session_options = {
             f"{s.class_name} | {s.subject_code} ({s.subject_name}) | {s.teacher_name} [Session {s.session_index}]": s.session_id
             for s in sessions
@@ -413,7 +401,6 @@ with tab_editor:
 
             new_room = st.selectbox("Destination Room:", list(data.rooms.keys()))
 
-        # Live conflict test without modifying original state until confirmed
         proposed_slot = (new_day_idx, new_period_idx, new_room)
         test_assignment = assignment.copy()
         test_assignment[chosen_id] = proposed_slot
@@ -425,23 +412,22 @@ with tab_editor:
 
         if test_eval["hard_violations"] == 0:
             st.markdown(
-                '<div class="success-card"><b>✅ VALID MOVE!</b> '
-                'This placement causes <b>0 hard-constraint clashes</b>.</div>',
+                '<div class="success-card"><strong>VALID MOVE</strong> &mdash; '
+                'This placement causes <strong>0 hard-constraint clashes</strong>.</div>',
                 unsafe_allow_html=True
             )
         else:
             st.markdown(
-                f'<div class="clash-card"><b>⚠️ {test_eval["hard_violations"]} HARD CONFLICT(S) DETECTED:</b><br>',
+                f'<div class="clash-card"><strong>{test_eval["hard_violations"]} HARD CONFLICT(S) DETECTED:</strong><br>',
                 unsafe_allow_html=True
             )
             for clash in test_eval["hard_details"]:
-                st.markdown(f"- 🔴 **{clash}**")
+                st.markdown(f"- <strong>{clash}</strong>")
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Apply Move Button
-        if st.button("💾 Apply Manual Move to Timetable", type="secondary"):
+        if st.button("Apply Manual Move to Timetable", type="secondary"):
             st.session_state.assignment[chosen_id] = proposed_slot
-            st.success("Session position updated in timetable!")
+            st.success("Session position updated in timetable.")
             st.rerun()
 
 # -----------------------------------------------------------------------------
@@ -472,8 +458,8 @@ with tab_analysis:
             ]
             for h_code, desc in hard_rules:
                 has_violation = any(h_code[:2] in v for v in eval_res["hard_details"])
-                icon = "❌" if has_violation else "✅"
-                st.markdown(f"**{icon} {h_code}**: {desc}")
+                status_txt = "[VIOLATED]" if has_violation else "[SATISFIED]"
+                st.markdown(f"**{status_txt} {h_code}**: {desc}")
 
             if eval_res["hard_details"]:
                 st.error("Active Violations:")
@@ -507,7 +493,6 @@ with tab_benchmarks:
     st.subheader("Algorithm Comparison & Convergence Graphs")
     st.markdown("Official benchmark comparing Backtracking Baseline, Backtracking Heuristic, Min-Conflicts, Simulated Annealing, and Hybrid CSP+SA.")
 
-    # Show generated graphs if available
     col_g1, col_g2 = st.columns(2)
     with col_g1:
         if os.path.exists("min_conflicts_convergence.png"):
@@ -523,7 +508,6 @@ with tab_benchmarks:
         else:
             st.info("Run `python run_experiments.py` to generate comparison charts.")
 
-    # Benchmark Results Tables
     if os.path.exists("benchmark_results.json"):
         with open("benchmark_results.json", "r") as f:
             b_data = json.load(f)
@@ -559,7 +543,7 @@ with tab_export:
 
         with col_csv:
             st.download_button(
-                label="📥 Download Timetable as CSV",
+                label="Download Timetable as CSV",
                 data=csv_str,
                 file_name="college_timetable.csv",
                 mime="text/csv",
@@ -568,7 +552,7 @@ with tab_export:
 
         with col_excel:
             st.download_button(
-                label="📥 Download Multi-Sheet Excel Workbook (.xlsx)",
+                label="Download Multi-Sheet Excel Workbook (.xlsx)",
                 data=excel_bytes,
                 file_name="college_timetable.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
