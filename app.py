@@ -2,6 +2,20 @@
 app.py
 ------
 Interactive Streamlit Web Application for the AI-Based Timetable Scheduler.
+
+Features:
+  1. Data Input: Preloaded Small/Large datasets or Upload Custom JSON/CSV files with live validation.
+  2. Algorithm Selector:
+     - Plain Backtracking (Baseline)
+     - Heuristic Backtracking (MRV + Degree + Forward Checking)
+     - Min-Conflicts Local Search (with random walk/restart)
+     - Simulated Annealing
+     - Hybrid CSP + SA
+  3. Real-time Metrics: Time taken, nodes/iterations, hard violations, soft penalties, cost score.
+  4. 2D Timetable Views: By Class, By Teacher, By Room.
+  5. Interactive Manual Editor with Instant Conflict Detection (Flags any H1-H9 violation immediately).
+  6. Direct Export to CSV and multi-sheet Excel (.xlsx).
+  7. Experimental Benchmark & Convergence Analysis visualization.
 """
 
 import streamlit as st
@@ -34,7 +48,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS: Bright white header and high-contrast status cards
+# Custom CSS: High contrast header and alert cards
 st.markdown("""
 <style>
     .main-title {
@@ -218,8 +232,8 @@ with st.sidebar:
             "Backtracking (with Heuristics: MRV + FC + Degree)",
             "Backtracking (Baseline Plain)",
             "Min-Conflicts Local Search",
-            "Simulated Annealing (+6 Bonus)",
-            "Hybrid CSP + Simulated Annealing (+6 Bonus)"
+            "Simulated Annealing",
+            "Hybrid CSP + Simulated Annealing"
         ]
     )
 
